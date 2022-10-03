@@ -15,10 +15,10 @@ class InfoMessage:
 
     def get_message(self) -> str:
         info_message: str = (
-            f'Тип тренировки: {self.training_type}; ' 
-            f'Длительность: {self.duration:0.3f} ч.; ' 
-            f'Дистанция: {self.distance:0.3f} км; ' 
-            f'Ср. скорость: {self.speed:0.3f} км/ч; ' 
+            f'Тип тренировки: {self.training_type}; '
+            f'Длительность: {self.duration:0.3f} ч.; '
+            f'Дистанция: {self.distance:0.3f} км; '
+            f'Ср. скорость: {self.speed:0.3f} км/ч; '
             f'Потрачено ккал: {self.calories:0.3f}.')
         return info_message
 
@@ -53,8 +53,9 @@ class Training:
 
     def show_training_info(self) -> InfoMessage:
         """Вернуть информационное сообщение о выполненной тренировке."""
-        #return InfoMessage.get_message(self)
-        return InfoMessage(self.__class__.__name__, self.duration, self.get_distance(), self.get_mean_speed(), self.get_spent_calories())
+        return InfoMessage(self.__class__.__name__, self.duration,
+                           self.get_distance(), self.get_mean_speed(),
+                           self.get_spent_calories())
 
 
 class Running(Training):
@@ -65,13 +66,16 @@ class Running(Training):
                  weight: float,
                  ) -> None:
         super().__init__(action, duration, weight)
-    
+
     def get_spent_calories(self) -> float:
-        coeff_calorie_1 = 18
-        coeff_calorie_2 = 20
-        coeff_calorie_time = 60 
-        calories = ((coeff_calorie_1 * self.get_mean_speed() - coeff_calorie_2) * self.weight / self.M_IN_KM * (self.duration*coeff_calorie_time))
+        coef_cal_1 = 18
+        coef_cal_2 = 20
+        coef_cal_t = 60
+        calories = ((coef_cal_1 * self.get_mean_speed() - coef_cal_2)
+                    * self.weight / self.M_IN_KM
+                    * (self.duration * coef_cal_t))
         return calories
+
 
 class SportsWalking(Training):
     """Тренировка: спортивная ходьба."""
@@ -85,15 +89,19 @@ class SportsWalking(Training):
         self.height = height
 
     def get_spent_calories(self) -> float:
-        coeff_calorie_3 = 0.035
-        coeff_calorie_4 = 0.029
-        coeff_calorie_time = 60 
-        calories = ((coeff_calorie_3* self.weight + (self.get_mean_speed() ** 2 // self.height) * coeff_calorie_4 * self.weight) * (self.duration*coeff_calorie_time))
+        coef_cal_3 = 0.035
+        coef_cal_4 = 0.029
+        coef_cal_t = 60
+        calories = ((coef_cal_3 * self.weight + (self.get_mean_speed() ** 2
+                    // self.height) * coef_cal_4 * self.weight)
+                    * (self.duration * coef_cal_t))
         return calories
+
 
 class Swimming(Training):
     """Тренировка: плавание."""
     LEN_STEP = 1.38
+
     def __init__(self,
                  action: int,
                  duration: float,
@@ -106,14 +114,17 @@ class Swimming(Training):
         self.count_pool = count_pool
 
     def get_spent_calories(self) -> float:
-        coeff_calorie_5 = 1.1
-        coeff_calorie_6 = 2 
-        calories = (self.get_mean_speed() + coeff_calorie_5) * coeff_calorie_6 * self.weight
+        coef_cal_5 = 1.1
+        coef_cal_6 = 2
+        calories = ((self.get_mean_speed() + coef_cal_5)
+                    * coef_cal_6 * self.weight)
         return calories
 
     def get_mean_speed(self) -> float:
-        speed = self.length_pool * self.count_pool / self.M_IN_KM / self.duration
+        speed = (self.length_pool * self.count_pool
+                 / self.M_IN_KM / self.duration)
         return speed
+
 
 def read_package(workout_type: str, data: list) -> Training:
     """Прочитать данные полученные от датчиков."""
@@ -123,6 +134,7 @@ def read_package(workout_type: str, data: list) -> Training:
         'WLK': SportsWalking,
     }
     return slovar[workout_type](*data)
+
 
 def main(training: Training) -> None:
     """Главная функция."""
@@ -140,4 +152,3 @@ if __name__ == '__main__':
     for workout_type, data in packages:
         training = read_package(workout_type, data)
         main(training)
-
