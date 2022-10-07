@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Dict
 
 
 @dataclass
@@ -53,21 +54,22 @@ class Training:
 
 class Running(Training):
     """Тренировка: бег."""
-    COEF_CAL_1: int = 18
-    COEF_CAL_2: int = 20
-    COEF_CAL_T: int = 60
+    COEFF_CALORIE_1: int = 18
+    COEFF_CALORIE_2: int = 20
+    COEFF_TIME: int = 60
 
     def get_spent_calories(self) -> float:
-        return ((self.COEF_CAL_1 * self.get_mean_speed() - self.COEF_CAL_2)
+        return ((self.COEFF_CALORIE_1 * self.get_mean_speed()
+                - self.COEFF_CALORIE_2)
                 * self.weight / self.M_IN_KM
-                * (self.duration * self.COEF_CAL_T))
+                * (self.duration * self.COEFF_TIME))
 
 
 class SportsWalking(Training):
     """Тренировка: спортивная ходьба."""
-    COEF_CAL_1: float = 0.035
-    COEF_CAL_2: float = 0.029
-    COEF_CAL_T: int = 60
+    COEFF_CALORIE_1: float = 0.035
+    COEFF_CALORIE_2: float = 0.029
+    COEFF_TIME: int = 60
 
     def __init__(self,
                  action: int,
@@ -79,16 +81,17 @@ class SportsWalking(Training):
         self.height = height
 
     def get_spent_calories(self) -> float:
-        return ((self.COEF_CAL_1 * self.weight + (self.get_mean_speed() ** 2
-                // self.height) * self.COEF_CAL_2 * self.weight)
-                * (self.duration * self.COEF_CAL_T))
+        return ((self.COEFF_CALORIE_1 * self.weight
+                + (self.get_mean_speed() ** 2
+                 // self.height) * self.COEFF_CALORIE_2 * self.weight)
+                * (self.duration * self.COEFF_TIME))
 
 
 class Swimming(Training):
     """Тренировка: плавание."""
     LEN_STEP: float = 1.38
-    COEF_CAL_1: float = 1.1
-    COEF_CAL_2: int = 2
+    COEFF_CALORIE_1: float = 1.1
+    COEFF_CALORIE_2: int = 2
 
     def __init__(self,
                  action: int,
@@ -102,8 +105,8 @@ class Swimming(Training):
         self.count_pool = count_pool
 
     def get_spent_calories(self) -> float:
-        return ((self.get_mean_speed() + self.COEF_CAL_1)
-                * self.COEF_CAL_2 * self.weight)
+        return ((self.get_mean_speed() + self.COEFF_CALORIE_1)
+                * self.COEFF_CALORIE_2 * self.weight)
 
     def get_mean_speed(self) -> float:
         return (self.length_pool * self.count_pool
@@ -112,7 +115,7 @@ class Swimming(Training):
 
 def read_package(workout_type: str, data: list) -> Training:
     """Прочитать данные полученные от датчиков."""
-    training_type: dict = {
+    training_type: Dict[str, str] = {
         'SWM': Swimming,
         'RUN': Running,
         'WLK': SportsWalking,
